@@ -1,1 +1,1 @@
-Example subscribe/monitor multiple Node ID
+Example subscribe/monitor with multiple Node ID
