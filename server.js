@@ -37,6 +37,7 @@ async function runServer() {
     componentOf: device,
     browseName: "Variable1",
     dataType: "Double",
+    minimumSamplingInterval: 1000,
     value: {
       get: () => new Variant({ dataType: DataType.Double, value: variable1 }),
     },
@@ -63,6 +64,7 @@ async function runServer() {
     nodeId: "ns=1;s=Memory",
     browseName: "Memory",
     dataType: "Double",
+    minimumSamplingInterval: 1000,
     value: {
       get: () =>
         new Variant({ dataType: DataType.Double, value: availableMemory() }),
