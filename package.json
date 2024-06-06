@@ -1,5 +1,5 @@
 {
-  "name": "opcua-client-node",
+  "name": "opcua-kafka-socketio-bridge",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,12 +10,19 @@
     "serverStart": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Ahmad Muslih Zain",
+    "email": "ahmadmuslih.zain@vivavis.com.tr"
+  },
   "license": "ISC",
   "dependencies": {
     "dayjs": "^1.11.11",
+    "dotenv": "^16.4.5",
+    "kafkajs": "^2.2.4",
     "node-opcua": "^2.125.0",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.3"
