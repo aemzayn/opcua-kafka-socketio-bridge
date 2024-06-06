@@ -80,7 +80,7 @@ async function getNodeIds(nodeLimit = 10) {
 }
 
 async function main() {
-  const ids = await getNodeIds(6);
+  const ids = await getNodeIds(1000);
   const client = OPCUAClient.create({
     endpointMustExist: false,
   });
