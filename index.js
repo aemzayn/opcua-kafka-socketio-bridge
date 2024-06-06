@@ -34,7 +34,7 @@ const producer = kafka.producer();
 })();
 
 // callback function for data change from opcua
-function makeCallback({ id, name }) {
+function makeCallback(nodeId) {
   return function (dataValue) {
     const time = formatTime(dataValue.serverTimestamp);
     const value = Number(dataValue.value.value.toString());
@@ -47,7 +47,7 @@ function makeCallback({ id, name }) {
         messages: [
           {
             value: JSON.stringify({
-              dataid: id,
+              dataid: nodeId,
               ze1: time,
               value: value,
               interval: "0",
@@ -57,7 +57,7 @@ function makeCallback({ id, name }) {
         ],
       })
       .then(() => {
-        console.log(name, "\t\t\t time: ", time, "\t\t\t value: ", value);
+        console.log(nodeId, "\t\t\t time: ", time, "\t\t\t value: ", value);
       });
   };
 }
@@ -73,14 +73,14 @@ async function getNodeIds(nodeLimit = 10) {
   await client.connect();
 
   const res = await client.query(
-    `SELECT name, node_id FROM "${pgTable}" ORDER BY id LIMIT ${nodeLimit}`
+    `SELECT node_id FROM "${pgTable}" ORDER BY id LIMIT ${nodeLimit}`
   );
   await client.end();
   return res.rows;
 }
 
 async function main() {
-  const ids = await getNodeIds(100);
+  const ids = await getNodeIds(6);
   const client = OPCUAClient.create({
     endpointMustExist: false,
   });
@@ -100,22 +100,32 @@ async function main() {
     console.log("subscription terminated");
   });
 
-  ids.forEach(async (item) => {
-    const id = item.node_id;
-    const monitoredItem = await subscription.monitor(
-      {
-        nodeId: id,
-        attributeId: AttributeIds.Value,
-      },
-      {
-        samplingInterval: 1000,
-        discardOldest: true,
-        queueSize: 10,
-      },
-      TimestampsToReturn.Both
-    );
-    monitoredItem.on("changed", makeCallback({ id: id, name: item.name }));
-  });
+  const itemsToMonitor = ids.map((item) => ({
+    nodeId: item.node_id,
+    attributeId: AttributeIds.Value,
+  }));
+
+  const monitoringParameters = {
+    samplingInterval: 1000,
+    discardOldest: true,
+    queueSize: 10,
+  };
+
+  subscription.monitorItems(
+    itemsToMonitor,
+    monitoringParameters,
+    TimestampsToReturn.Both,
+    (err, monitoredItems) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      monitoredItems.on("changed", (monitoredItem, dataValue) => {
+        const nodeId = monitoredItem.itemToMonitor.nodeId.toString();
+        makeCallback(nodeId)(dataValue);
+      });
+    }
+  );
 
   console.log("subscription created");
 }

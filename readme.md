@@ -10,7 +10,6 @@ Subscribe data from opcua and distribute the data to web socket client through k
    Table structure:
    - `id` primary key
    - `node_id` string unique
-   - `name` string: required column but optional to fill, contains label for node id
 
 ## Architecture
 
