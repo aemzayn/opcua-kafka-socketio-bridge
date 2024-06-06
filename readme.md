@@ -21,13 +21,13 @@ Subscribe data from opcua and distribute the data to web socket client through k
 
 ## File structures
 
-1. index.js
+1. `index.js`  
    Contain OPC client, pg client and kafka producer
-2. kafka-client
+2. `kafka-client.js`  
    Kafka client which subscribe from topic and send data to websocket
-3. socket-server
+3. `socket-server.js`  
    The main socket server, distributed data based on dataid to each rooms
-4. socket-client
+4. `socket-client.js`  
    Act as client for simple presentation, even though there are multiple dataid coming from opcua, this client will only get the client requested dataid's data
 
 ## How to start
